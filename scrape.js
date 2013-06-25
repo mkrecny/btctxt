@@ -32,7 +32,7 @@ needle.get(depth_endpoint, function(error, response, body){
   });
 
   multi.exec(function(){
-    console.log('wrote', bids.length, 'bids', asks.length, 'asks');
+    console.log(new Date(), 'wrote', bids.length, 'bids', asks.length, 'asks');
     process.exit();
   });
 
