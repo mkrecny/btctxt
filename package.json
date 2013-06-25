@@ -6,6 +6,7 @@
     "async": ""
   , "request": ""
   , "redis": "0.7.2"
+  , "mongodb":""
   , "needle": ""
   , "underscore" : ""
   , "socket.io" : ""
