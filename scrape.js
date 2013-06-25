@@ -21,7 +21,6 @@ var maybe_end = function(){
 var write_to_mongo = function(data, coll){
   data.forEach(function(d){
     d._id = d.stamp;
-    console.log(d._id);
   });
   MongoClient.connect('mongodb://127.0.0.1:27017/btctxt', function(err, db){
     var collection = db.collection(coll);
@@ -31,7 +30,7 @@ var write_to_mongo = function(data, coll){
 
 var write_to_redis = function(data, key){
   var multi = redis.multi();
-  data.asks.forEach(function(d){
+  data.forEach(function(d){
     multi.sadd(key, d.stamp);
     multi.hmset(key+':'+d.stamp, d);
   });
@@ -41,7 +40,8 @@ var write_to_redis = function(data, key){
 }
 
 needle.get(data_endpoint, function(error, response, body){
-  if (!body.data){ throw new Error('No data'); process.exit();}
+  console.log(Object.keys(body.data), body.data.length);
+  if (!body.data){ console.error('no data'); process.exit();}
   write_to_redis(body.data.asks, 'asks');
   write_to_redis(body.data.bids, 'bids');
   write_to_mongo(body.data.asks, 'asks');
