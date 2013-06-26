@@ -12,7 +12,7 @@ var _ = require('underscore')
 var maybe_end = function(){
   completed_writes+=1;
   if (completed_writes == expected_writes) {
-    console.log('completed');
+    console.log('completed on', new Date());
     process.exit();
   }
 }
