@@ -41,12 +41,14 @@ var write_to_redis = function(data, key){
   multi.exec(maybe_end);
 }
 
-needle.get(data_endpoint, function(error, response, body){
-  body = typeof body === 'string' ? JSON.parse(body) : body;
-  if (!body.data){ console.error('no data'); process.exit();}
-  redis.zrange('trades', 0, -1, function(e, trades){
-    console.log('existing trades', trades.length);
-    write_to_redis(body.data, 'trades');
-    write_to_mongo(body.data, 'trades', trades);
-  });
+redis.zrange('trades', 0, -1, function(e, trades){
+  //data_endpoint = trades.length ? data_endpoint+'?since='+trades[0] : data_endpoint;
+  //console.log(data_endpoint);
+  needle.get(data_endpoint, function(error, response, body){
+    body = typeof body === 'string' ? JSON.parse(body) : body;
+    if (!body.data){ console.error('no data'); process.exit();}
+      console.log('existing trades', trades.length);
+      write_to_redis(body.data, 'trades');
+      write_to_mongo(body.data, 'trades', trades);
+    });
 });
