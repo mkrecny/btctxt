@@ -4,6 +4,7 @@ var _ = require('underscore')
 , MongoClient = require('mongodb').MongoClient
 , format = require('util').format
 , fs = require('fs')
+, exchange_id = 'mtgox'
 , redis = require('redis').createClient()
 , data_endpoint = 'http://data.mtgox.com/api/2/BTCUSD/MONEY/TRADES/FETCH'
 , expected_writes = 2
@@ -18,12 +19,11 @@ var maybe_end = function(){
 }
 
 var write_to_mongo = function(data, coll, existing_set){
-  if (existing_set) {
-    data = _.filter(data, function(d){ return !_.contains(existing_set, d.tid); });
-    data.forEach(function(d){
-      d._id = d.tid;
-    });
-  }
+  data = _.filter(data, function(d){ return !_.contains(existing_set, d.tid); });
+  data.forEach(function(d){
+    d._id = d.tid;
+    d.exchange = exchange_id;
+  });
   console.log(data.length, coll, 'additions');
   MongoClient.connect('mongodb://127.0.0.1:27017/btctxt', function(err, db){
     var collection = db.collection(coll);
